@@ -1,0 +1,33 @@
+# Environments
+.env
+.env.local
+.env.*
+.venv/
+.ohmo-env/
+.black_forge-env/
+env/
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution / Packaging
+dist/
+build/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific Configs
+# (Optional: keep these local only)
+.black_forge/
+.ohmo/
