@@ -1,0 +1,40 @@
+{
+  "past_campaigns": [
+    {
+      "platform": "X/Twitter",
+      "campaign_type": "SaaS Launch",
+      "successful_hooks": [
+        "We spent 6 months building X so you don't have to.",
+        "Stop doing Y. Do this instead."
+      ],
+      "poor_hooks": [
+        "We are excited to announce",
+        "Introducing our new feature"
+      ],
+      "key_learnings": "Short punchy sentences work best. Avoid buzzwords like 'synergy' or 'revolutionary'. Always include a strong Call to Action (CTA)."
+    },
+    {
+      "platform": "LinkedIn",
+      "campaign_type": "B2B Outreach",
+      "successful_hooks": [
+        "Most [Job Title]s struggle with [Problem]. Here is the framework I use to solve it.",
+        "I analyzed 100 successful [Topic] strategies. Here are the top 3 patterns:"
+      ],
+      "poor_hooks": [
+        "I am humbled and honored to...",
+        "Buy my product because..."
+      ],
+      "key_learnings": "Formatting with plenty of whitespace is crucial. Bullet points are effective. Tagging relevant people naturally boosts reach."
+    }
+  ],
+  "brand_voice_guidelines": {
+    "tone": "Direct, authoritative but accessible, slightly contrarian.",
+    "banned_phrases": [
+      "game-changer",
+      "cutting-edge",
+      "leverage",
+      "unlock your potential"
+    ],
+    "formatting_rules": "Use line breaks heavily. Emojis should be used sparingly (max 2 per post) and functionally (e.g., as bullet points). No hashtags on LinkedIn, max 2 on X."
+  }
+}
