@@ -1,6 +1,6 @@
 # 🌌 Black Forge : The Personal Agent OS & Marketing Framework
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Gemini 1.5](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-orange.svg)](https://deepmind.google/technologies/gemini/)
 [![LangGraph](https://img.shields.io/badge/Framework-LangGraph-green.svg)](https://github.com/langchain-ai/langgraph)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -46,27 +46,46 @@
 
 ## 🛠 Installation & Setup
 
-1. **Clone & Environment** (Python 3.9+):
-   ```bash
-   git clone https://github.com/rohanmalyadri/Black-Forge.git
-   cd Black-Forge
-   python3 -m venv .black_forge-env
-   source .black_forge-env/bin/activate
-   pip install -r requirements.txt   # also installs the black_forge package
-   ```
+You need **Python 3.10 or newer** (the `python3` that ships with macOS is 3.9 and is too old: install a newer one with `brew install python@3.12` or from [python.org](https://www.python.org/downloads/)) and a free [Gemini API key](https://aistudio.google.com/apikey).
 
-2. **Configure API Key**:
-   ```bash
-   cp .env.example .env   # then put your Gemini key in GOOGLE_API_KEY
-   ```
+### macOS / Linux
+```bash
+git clone https://github.com/rohanmalyadri/Black-Forge.git
+cd Black-Forge
+./setup.sh                 # finds Python 3.10+, installs everything, asks for your key
+./blackforge about
+./blackforge chat "List the files in this folder"
+./blackforge optimize --goal "Launch Black Forge" --platform LinkedIn --draft "Black Forge is an AI agent for your terminal."
+```
 
-3. **Initialize & run Black Forge**:
-   ```bash
-   s setup                                  # creates ~/.black_forge and checks your key
-   s about                                  # what Black Forge is
-   s chat "List the files in this folder"   # agent loop with tools
-   ```
-   Docker is optional; without it the `run_shell` tool reports that sandboxing is unavailable.
+### Windows (Command Prompt or PowerShell)
+```bat
+git clone https://github.com/rohanmalyadri/Black-Forge.git
+cd Black-Forge
+setup.bat
+blackforge about
+blackforge chat "List the files in this folder"
+blackforge optimize --goal "Launch Black Forge" --platform LinkedIn --draft "Black Forge is an AI agent for your terminal."
+```
+In PowerShell, prefix the commands with `.\` (for example `.\setup.bat`, `.\blackforge about`).
+
+`--platform` can be `LinkedIn`, `X/Twitter` or `Instagram`. Your key lives in the `.env` file in the project folder; edit it any time. If the free daily quota for the default model runs out, add `GEMINI_MODEL=gemini-3.5-flash-lite` to `.env`.
+
+<details>
+<summary>Manual install (if you prefer)</summary>
+
+```bash
+python3.12 -m venv .venv            # any Python 3.10+
+source .venv/bin/activate           # Windows: .venv\Scripts\activate
+python -m pip install --upgrade pip # old pip can't install this project
+pip install -r requirements.txt
+cp .env.example .env                # Windows: copy .env.example .env   then add your key
+s about                             # or: black-forge about / python -m black_forge about
+python main.py --help               # AutoReason optimizer
+```
+</details>
+
+Docker is optional; without it the `run_shell` tool reports that sandboxing is unavailable.
 
 ---
 
