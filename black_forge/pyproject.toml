@@ -1,18 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "black_forge"
 version = "0.1.0"
-description = "Black Forge: Personal Agent CLI"
-readme = "README.md"
+description = "Black Forge: Personal Agent CLI. Made with love Rohan Malyadri From Obscuron X Labs"
 requires-python = ">=3.9"
 authors = [
-    { name = "User", email = "user@example.com" }
+    { name = "Rohan Malyadri (Obscuron X Labs)" }
 ]
 dependencies = [
     "typer>=0.12.0",
     "pydantic>=2.7.0",
     "rich>=13.7.0",
-    "langchain-core>=0.2.0",
-    "langchain-google-genai>=1.0.0",
+    "langchain-core>=1.0.0",
+    "langchain-google-genai>=3.0.0",
     "python-dotenv>=1.0.0",
     "docker>=7.0.0"
 ]
@@ -20,3 +23,6 @@ dependencies = [
 [project.scripts]
 black_forge = "black_forge.core.cli:app"
 s = "black_forge.core.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["black_forge*"]

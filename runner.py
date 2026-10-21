@@ -1,10 +1,13 @@
 import random
 import logging
-from typing import TypedDict, Annotated, List, Dict
+from typing import TypedDict, Dict
 from langgraph.graph import StateGraph, END
 from agents import critique_copy, rewrite_copy, synthesize_copy, judge_copies, CritiqueOutput
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+# Keep per-request HTTP / SDK chatter out of the round-by-round log
+for noisy in ("httpx", "google_genai", "google_genai.models"):
+    logging.getLogger(noisy).setLevel(logging.WARNING)
 
 class GraphState(TypedDict):
     campaign_goal: str
@@ -93,7 +96,8 @@ def should_continue(state: GraphState) -> str:
     if state["survival_count"] >= 2:
         logging.info(f"✅ Candidate A has survived 2 rounds! Terminating.")
         return "end"
-    if state["round"] >= state["max_rounds"]:
+    # `round` has already been incremented for the next round here
+    if state["round"] > state["max_rounds"]:
         logging.warning("🛑 Max rounds reached. Terminating early.")
         return "end"
     return "continue"
@@ -132,13 +136,14 @@ def run_experiment(goal: str, platform: str, initial_draft: str, max_rounds: int
         "max_rounds": max_rounds
     }
     
-    print("\n🚀 Starting AutoReason Optimization...")
+    print("\n🚀 Starting Black Forge AutoReason Optimization...")
     print(f"Goal: {goal}")
     print(f"Platform: {platform}")
     print(f"Initial Draft:\n{initial_draft}\n")
     print("-" * 40)
     
-    final_state = graph.invoke(initial_state)
+    # Each round is 4 graph steps; leave headroom over LangGraph's default limit of 25
+    final_state = graph.invoke(initial_state, config={"recursion_limit": max_rounds * 4 + 10})
     
     print("\n" + "=" * 40)
     print("🎯 OPTIMIZATION COMPLETE")

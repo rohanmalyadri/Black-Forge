@@ -7,12 +7,20 @@ class DockerSandbox:
     
     def __init__(self, image: str = "ubuntu:latest"):
         self.image = image
-        try:
-            self.client = docker.from_env()
-        except docker.errors.DockerException as e:
-            # For environments without Docker daemon running
-            self.client = None
-            print(f"Warning: Docker daemon is not accessible. Sandboxing disabled: {e}")
+        self._client = None
+        self._connected = False
+
+    @property
+    def client(self):
+        # Connect lazily so importing the tool registry doesn't require Docker.
+        if not self._connected:
+            self._connected = True
+            try:
+                self._client = docker.from_env()
+            except docker.errors.DockerException as e:
+                # For environments without Docker daemon running
+                print(f"Warning: Docker daemon is not accessible. Sandboxing disabled: {e}")
+        return self._client
 
     def run_command(self, command: str, working_dir: str = "/workspace") -> str:
         """Runs a bash command securely inside a one-off Docker container."""
@@ -23,7 +31,7 @@ class DockerSandbox:
             # Run detached and wait for execution context, auto-removing to prevent bloat.
             container = self.client.containers.run(
                 self.image,
-                command=f'bash -c "{command}"',
+                command=["bash", "-c", command],
                 working_dir=working_dir,
                 detach=False,
                 remove=True,

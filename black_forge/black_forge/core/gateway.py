@@ -20,8 +20,7 @@ class SessionPool:
         self.load_sessions()
 
     def _ensure_config_dir(self):
-        if not os.path.exists(self.config_dir):
-            os.makedirs(self.config_dir)
+        os.makedirs(self.config_dir, exist_ok=True)
 
     def load_sessions(self):
         if os.path.exists(self.gateway_file):

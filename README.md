@@ -46,25 +46,27 @@
 
 ## 🛠 Installation & Setup
 
-1. **Clone & Environment**:
+1. **Clone & Environment** (Python 3.9+):
    ```bash
-   git clone https://github.com/your-repo/black_forge.git
-   cd black_forge
+   git clone https://github.com/rohanmalyadri/Black-Forge.git
+   cd Black-Forge
    python3 -m venv .black_forge-env
    source .black_forge-env/bin/activate
-   pip install -e ./black_forge
+   pip install -r requirements.txt   # also installs the black_forge package
    ```
 
 2. **Configure API Key**:
-   Create a `.env` file in the root directory:
-   ```env
-   GOOGLE_API_KEY=your_gemini_api_key_here
+   ```bash
+   cp .env.example .env   # then put your Gemini key in GOOGLE_API_KEY
    ```
 
-3. **Initialize Black Forge**:
+3. **Initialize & run Black Forge**:
    ```bash
-   s setup
+   s setup                                  # creates ~/.black_forge and checks your key
+   s about                                  # what Black Forge is
+   s chat "List the files in this folder"   # agent loop with tools
    ```
+   Docker is optional; without it the `run_shell` tool reports that sandboxing is unavailable.
 
 ---
 
@@ -112,5 +114,5 @@ Contributions are welcome! Whether it's adding a new **LLM Provider** or a **Bui
 ---
 
 <p align="center">
-  Built with ❤️ by the Rohan Malyadri
+  <b>Black Forge</b> · Made with love Rohan Malyadri From <b>Obscuron X Labs</b> ❤️
 </p>

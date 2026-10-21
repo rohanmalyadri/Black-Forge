@@ -1,5 +1,5 @@
 import os
-import json
+from typing import Literal
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -7,16 +7,20 @@ from pydantic import BaseModel, Field
 
 load_dotenv()
 
-# Initialize LLMs (Using Gemini)
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
-llm_judge = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1) # Lower temp for more consistent judging
+# Resolve data files next to this module so the CLI works from any directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Initialize LLMs (Using Gemini). GEMINI_MODEL lets you switch models, e.g. when a free-tier quota runs out.
+MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+llm = ChatGoogleGenerativeAI(model=MODEL, temperature=0.7)
+llm_judge = ChatGoogleGenerativeAI(model=MODEL, temperature=0.1) # Lower temp for more consistent judging
 
 def load_knowledge_base():
-    with open('knowledge_base.json', 'r') as f:
+    with open(os.path.join(BASE_DIR, 'knowledge_base.json'), 'r') as f:
         return f.read()
 
 def load_prompts():
-    with open('prompts.md', 'r') as f:
+    with open(os.path.join(BASE_DIR, 'prompts.md'), 'r') as f:
         content = f.read()
     
     # Simple parser to extract sections
@@ -48,10 +52,12 @@ class CritiqueOutput(BaseModel):
     critique_2: str = Field(description="Second critical point")
     critique_3: str = Field(description="Third critical point")
 
+Option = Literal["option_1", "option_2", "option_3"]
+
 class JudgeOutput(BaseModel):
-    first_choice: str = Field(description="The option name of the 1st choice, strictly 'option_1', 'option_2', or 'option_3'")
-    second_choice: str = Field(description="The option name of the 2nd choice, strictly 'option_1', 'option_2', or 'option_3'")
-    third_choice: str = Field(description="The option name of the 3rd choice, strictly 'option_1', 'option_2', or 'option_3'")
+    first_choice: Option = Field(description="The option name of the 1st choice, strictly 'option_1', 'option_2', or 'option_3'")
+    second_choice: Option = Field(description="The option name of the 2nd choice, strictly 'option_1', 'option_2', or 'option_3'")
+    third_choice: Option = Field(description="The option name of the 3rd choice, strictly 'option_1', 'option_2', or 'option_3'")
     justification: str = Field(description="Brief justification for the 1st choice")
 
 def critique_copy(candidate_a: str, goal: str, platform: str) -> CritiqueOutput:
@@ -66,13 +72,13 @@ def rewrite_copy(critique: CritiqueOutput, goal: str, platform: str) -> str:
     sys_msg = SystemMessage(content=f"You are operating for platform: {platform}.\n\n{PROMPTS['author']}")
     human_msg = HumanMessage(content=f"Campaign Goal: {goal}\n\nCritic Feedback:\n{critique_str}")
     
-    return llm.invoke([sys_msg, human_msg]).content
+    return llm.invoke([sys_msg, human_msg]).text
 
 def synthesize_copy(candidate_a: str, candidate_b: str, goal: str, platform: str) -> str:
     sys_msg = SystemMessage(content=f"You are operating for platform: {platform}.\n\n{PROMPTS['synthesizer']}")
     human_msg = HumanMessage(content=f"Campaign Goal: {goal}\n\nDraft A:\n{candidate_a}\n\nDraft B:\n{candidate_b}")
     
-    return llm.invoke([sys_msg, human_msg]).content
+    return llm.invoke([sys_msg, human_msg]).text
 
 def judge_copies(goal: str, option_1: str, option_2: str, option_3: str, platform: str) -> JudgeOutput:
     sys_msg = SystemMessage(content=f"You are operating for platform: {platform}.\n\n{PROMPTS['judge']}")
