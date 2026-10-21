@@ -5,6 +5,9 @@ from langgraph.graph import StateGraph, END
 from agents import critique_copy, rewrite_copy, synthesize_copy, judge_copies, CritiqueOutput
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+# Keep per-request HTTP / SDK chatter out of the round-by-round log
+for noisy in ("httpx", "google_genai", "google_genai.models"):
+    logging.getLogger(noisy).setLevel(logging.WARNING)
 
 class GraphState(TypedDict):
     campaign_goal: str
@@ -93,7 +96,8 @@ def should_continue(state: GraphState) -> str:
     if state["survival_count"] >= 2:
         logging.info(f"✅ Candidate A has survived 2 rounds! Terminating.")
         return "end"
-    if state["round"] >= state["max_rounds"]:
+    # `round` has already been incremented for the next round here
+    if state["round"] > state["max_rounds"]:
         logging.warning("🛑 Max rounds reached. Terminating early.")
         return "end"
     return "continue"
