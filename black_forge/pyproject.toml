@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "black_forge"
 version = "0.1.0"
 description = "Black Forge: Personal Agent CLI. Made with love Rohan Malyadri From Obscuron X Labs"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "Rohan Malyadri (Obscuron X Labs)" }
 ]
@@ -22,6 +22,7 @@ dependencies = [
 
 [project.scripts]
 black_forge = "black_forge.core.cli:app"
+black-forge = "black_forge.core.cli:app"
 s = "black_forge.core.cli:app"
 
 [tool.setuptools.packages.find]

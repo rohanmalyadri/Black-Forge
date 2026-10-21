@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Black Forge launcher: works without activating the virtual environment.
+#   ./blackforge about | setup | chat "..."      -> agent CLI
+#   ./blackforge optimize --goal ... --platform ... --draft ...   -> AutoReason (main.py)
+DIR="$(cd "$(dirname "$0")" && pwd)"
+PY="$DIR/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+  echo "Black Forge is not installed yet. Run ./setup.sh first."
+  exit 1
+fi
+if [ "$1" = "optimize" ]; then
+  shift
+  exec "$PY" "$DIR/main.py" "$@"
+fi
+exec "$PY" -m black_forge "$@"
