@@ -22,7 +22,10 @@ class QueryEngine:
         self.memory = MemoryManager()
         
         # System prompt now handled dynamically by memory, but baseline identity is 'black_forge'
-        self.baseline_name = "black_forge"
+        self.baseline_name = "Black Forge"
+
+    # Hard stop so a model that keeps requesting tools can't loop forever.
+    MAX_TOOL_ROUNDS = 15
         
     def execute_loop(self, prompt: str) -> str:
         """
@@ -34,15 +37,15 @@ class QueryEngine:
         
         self.messages.append(HumanMessage(content=prompt))
         
-        while True:
+        for _ in range(self.MAX_TOOL_ROUNDS):
             # 1. Ask LLM
             response_msg = self.provider.interact(self.messages, system_prompt)
             self.messages.append(response_msg)
             
             # 2. Check if Tool Call is requested
             if not getattr(response_msg, "tool_calls", None):
-                # No tool calls, finish loop
-                return response_msg.content
+                # No tool calls, finish loop. `.text` flattens Gemini's list-of-blocks content.
+                return response_msg.text
                 
             # 3. Execute Tool
             for tool_call in response_msg.tool_calls:
@@ -69,3 +72,5 @@ class QueryEngine:
                     self.messages.append(ToolMessage(content=f"Error: Tool {tool_name} not found.", tool_call_id=tool_call_id))
             
             # Loop runs again with the ToolMessage appended!
+
+        return f"Stopped after {self.MAX_TOOL_ROUNDS} tool rounds without a final answer."

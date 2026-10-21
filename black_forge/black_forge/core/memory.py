@@ -11,8 +11,7 @@ class MemoryManager:
         
     def _ensure_files(self):
         """Creates dummy identity files if they do not exist."""
-        if not os.path.exists(self.config_dir):
-            os.makedirs(self.config_dir)
+        os.makedirs(self.config_dir, exist_ok=True)
             
         if not os.path.exists(self.soul_file):
             with open(self.soul_file, 'w') as f:
@@ -27,7 +26,7 @@ class MemoryManager:
             if os.path.exists(filepath):
                 with open(filepath, 'r') as f:
                     return f.read()
-        except:
+        except OSError:
             pass
         return ""
 
