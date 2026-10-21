@@ -6,15 +6,15 @@ from .llm import BaseLLMProvider
 from black_forge.tools.registry import global_tool_registry
 
 class GeminiProvider(BaseLLMProvider):
-    def __init__(self, model_name: str = "gemini-2.5-flash", temperature: float = 0.5):
+    def __init__(self, model_name: str = None, temperature: float = 0.5):
         from dotenv import load_dotenv
         load_dotenv()
         
-        self.model_name = model_name
+        self.model_name = model_name or os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
         self.temperature = temperature
         
         # Will fail if GOOGLE_API_KEY is not in env (gemini-1.5-* models are retired)
-        self.llm = ChatGoogleGenerativeAI(model=model_name, temperature=temperature)
+        self.llm = ChatGoogleGenerativeAI(model=self.model_name, temperature=temperature)
         
     def _convert_to_lc_tools(self) -> List[Any]:
         from langchain_core.tools import StructuredTool

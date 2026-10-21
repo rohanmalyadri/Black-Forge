@@ -10,9 +10,10 @@ load_dotenv()
 # Resolve data files next to this module so the CLI works from any directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Initialize LLMs (Using Gemini)
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
-llm_judge = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1) # Lower temp for more consistent judging
+# Initialize LLMs (Using Gemini). GEMINI_MODEL lets you switch models, e.g. when a free-tier quota runs out.
+MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+llm = ChatGoogleGenerativeAI(model=MODEL, temperature=0.7)
+llm_judge = ChatGoogleGenerativeAI(model=MODEL, temperature=0.1) # Lower temp for more consistent judging
 
 def load_knowledge_base():
     with open(os.path.join(BASE_DIR, 'knowledge_base.json'), 'r') as f:
